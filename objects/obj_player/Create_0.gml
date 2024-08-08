@@ -17,6 +17,5 @@ inputs = {
 	up: ord("W"),
 	down: ord("S"),
 	jump: vk_space,
-	attack: mb_left,
-	
+	attack: vk_enter,
 }
