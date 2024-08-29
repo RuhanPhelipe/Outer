@@ -5,6 +5,7 @@ spd_v = 0;
 spd_h = 0;
 
 spd_player = 5;
+spd_dash = 80;
 spd_jump = 8;
 grav = .5;
 
@@ -18,4 +19,5 @@ inputs = {
 	down: ord("S"),
 	jump: vk_space,
 	attack: vk_enter,
+	dash: vk_control,
 }

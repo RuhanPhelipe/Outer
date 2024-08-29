@@ -5,9 +5,14 @@ var _up = keyboard_check(inputs.right);
 var _down = keyboard_check(inputs.down);
 var _jump = keyboard_check_pressed(inputs.jump);
 var _attack = keyboard_check_pressed(inputs.attack);
+var _dash = keyboard_check_pressed(inputs.dash);
 
 // Setting move
-spd_h = (_right - _left) * spd_player;
+if(_dash){
+	spd_h = (_right - _left) * spd_dash;
+} else {
+	spd_h = (_right - _left) * spd_player;
+}
 
 // Jump System
 var _on_ground = place_meeting(x, y + 1, obj_collision);
@@ -31,7 +36,6 @@ if(spd_h != 0){
 if(_attack){
 	sprite_index = spr_player_attack;
 	var _direc = image_xscale*attack_range;
-	show_debug_message(_direc);
 	if(place_meeting(x+(_direc), y, obj_enemies)){
 		obj_enemies.sprite_index = spr_enemies_hurt;
 	}

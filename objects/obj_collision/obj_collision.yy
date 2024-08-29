@@ -27,7 +27,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"obj_coll",
+    "path":"sprites/obj_coll/obj_coll.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }
