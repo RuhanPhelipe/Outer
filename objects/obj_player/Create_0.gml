@@ -10,6 +10,7 @@ spd_jump = 8;
 grav = .5;
 
 attack_range = 30;
+attack_pw = 1;
 
 
 inputs = {
@@ -20,4 +21,5 @@ inputs = {
 	jump: vk_space,
 	attack: vk_enter,
 	dash: vk_control,
+	pause: vk_escape,
 }
