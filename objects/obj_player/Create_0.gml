@@ -1,17 +1,11 @@
 /// @description Insert description here
 // You can write your code in this editor
 
-spd_v = 0;
-spd_h = 0;
+// Inherit the parent event
+event_inherited();
 
-spd_player = 5;
-spd_dash = 80;
-spd_jump = 8;
-grav = .5;
-
-attack_range = 30;
-attack_pw = 1;
-
+max_life = global.max_life;
+life = global.life
 
 inputs = {
 	left: ord("A"),

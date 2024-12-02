@@ -1,3 +1,6 @@
+// Inherit the parent event
+event_inherited();
+
 // Setting the keys
 var _left = keyboard_check(inputs.left);
 var _right = keyboard_check(inputs.right);
@@ -11,44 +14,114 @@ var _pause = keyboard_check_pressed(inputs.pause);
 // Setting move
 spd_h = _dash ? (_right - _left) * spd_dash : (_right - _left) * spd_player;
 
-#region Jump System
 
-var _on_ground = place_meeting(x, y + 1, obj_collision);
+#region State Machine
 
-if(_on_ground){
-	sprite_index = spr_player_idle;
-	if(_jump){
-		spd_v = -spd_jump;
-	}
-}else{
-	sprite_index = spr_player_jump;
-	spd_v += grav;
+switch(state){
+	
+	case IDLE:
+		sprite_index = spr_player_idle;
+		
+		if (_right || _left){
+			state = WALKING;
+		} else if (_dash) {
+			state = DASHING;
+		} else if (_jump || spd_v != 0) {
+			state = JUMPING;
+			spd_v = -spd_jump;
+		}
+		
+		if (_attack) {
+			state = ATTACKING;
+		}
+		
+		image_index = 0;
+		break;
+	
+	case WALKING:
+		sprite_index = spr_player_walk;
+		
+		if (abs(spd_h) < .1){
+			state = IDLE;
+		} else if (_dash) {
+			state = DASHING;
+		} else if (_jump || spd_v != 0) {
+			state = JUMPING;
+			spd_v = -spd_jump;
+		}
+		
+		if (_attack) {
+			state = ATTACKING;
+		}
+		
+		image_index = 0
+		break;
+	
+	case DASHING:
+		sprite_index = spr_player_dash;
+		
+		if(image_index > image_number - 1) {
+			state = WALKING
+		}
+		
+		break;
+	
+	case JUMPING:
+		
+		if(spd_v < 0){
+			sprite_index = spr_player_jump;
+			image_index = 0;
+		}else {
+			sprite_index = spr_player_fall;
+		}
+		
+		if(on_ground){
+			state = IDLE;
+		}
+		
+		if (_attack) {
+			state = ATTACKING;
+		}
+		break;
+	
+	
+	case ATTACKING:
+		sprite_index = spr_player_attack;
+		
+		if(image_index > image_number-1 && on_ground){
+			state = IDLE;
+		}else if (image_index > image_number-1){
+			state = JUMPING;
+		}
+		break;
+	
 }
 
 #endregion
-
-// Inverting the Sprite direction
-if(spd_h != 0){
-	image_xscale = sign(spd_h);
-}
-
+	
 #region Attack system
 if(_attack){
 	sprite_index = spr_player_attack;
-	var _direc = image_xscale*attack_range;
-	if(place_meeting(x+(_direc), y, obj_enemies)){
-		obj_enemies.sprite_index = spr_enemies_hurt;
-	}
+	
+	instance_create_layer(x+sprite_width, y, layer, obj_dmg);
+	
 	
 	if((global.life - attack_pw) > 0){
 		global.life -= attack_pw;
 	} else{ 
-		global.life = global.max_life;
-		room_restart();		
+		
 	}
 	
 }
+	
+#endregion
 
+#region Restart Room
+
+if(keyboard_check_pressed(vk_backspace)){
+	global.life = global.max_life;
+	room_restart();		
+}
 #endregion
 
 if(keyboard_check_pressed(vk_f11)){
@@ -58,3 +131,5 @@ if(keyboard_check_pressed(vk_f11)){
 if(_pause){
 	game_end();
 }
+
+

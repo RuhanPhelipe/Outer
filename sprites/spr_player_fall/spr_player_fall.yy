@@ -1,6 +1,6 @@
 {
   "$GMSprite":"",
-  "%Name":"spr_enemies_hurt",
+  "%Name":"spr_player_fall",
   "bboxMode":0,
   "bbox_bottom":63,
   "bbox_left":0,
@@ -12,28 +12,28 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"ee32992d-6592-4419-88b6-6c2e0cfce61f","name":"ee32992d-6592-4419-88b6-6c2e0cfce61f","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"","%Name":"8b2f5ba5-7c18-4e0f-9917-5fd072a0fa8d","name":"8b2f5ba5-7c18-4e0f-9917-5fd072a0fa8d","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,
   "height":64,
   "HTile":false,
   "layers":[
-    {"$GMImageLayer":"","%Name":"32d36bea-a5d1-4e9d-8d1e-bf895491432b","blendMode":0,"displayName":"default","isLocked":false,"name":"32d36bea-a5d1-4e9d-8d1e-bf895491432b","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
+    {"$GMImageLayer":"","%Name":"27bb104c-4200-4884-9e53-8d0e76c2226b","blendMode":0,"displayName":"default","isLocked":false,"name":"27bb104c-4200-4884-9e53-8d0e76c2226b","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
   ],
-  "name":"spr_enemies_hurt",
+  "name":"spr_player_fall",
   "nineSlice":null,
   "origin":7,
   "parent":{
-    "name":"Enemies",
-    "path":"folders/Sprites/Enteties/Enemies.yy",
+    "name":"Player",
+    "path":"folders/Sprites/Enteties/Player.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",
   "resourceVersion":"2.0",
   "sequence":{
     "$GMSequence":"",
-    "%Name":"spr_enemies_hurt",
+    "%Name":"spr_player_fall",
     "autoRecord":true,
     "backdropHeight":768,
     "backdropImageOpacity":0.5,
@@ -57,7 +57,7 @@
       "resourceType":"KeyframeStore<MomentsEventKeyframe>",
       "resourceVersion":"2.0",
     },
-    "name":"spr_enemies_hurt",
+    "name":"spr_player_fall",
     "playback":1,
     "playbackSpeed":30.0,
     "playbackSpeedType":0,
@@ -69,8 +69,8 @@
     "tracks":[
       {"$GMSpriteFramesTrack":"","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<SpriteFrameKeyframe>":"","Keyframes":[
             {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
-                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"ee32992d-6592-4419-88b6-6c2e0cfce61f","path":"sprites/spr_enemies_hurt/spr_enemies_hurt.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
-              },"Disabled":false,"id":"3049f33a-fb65-41e6-bd74-57aaff00a490","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"8b2f5ba5-7c18-4e0f-9917-5fd072a0fa8d","path":"sprites/spr_player_fall/spr_player_fall.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+              },"Disabled":false,"id":"fda9f1b7-915b-41b6-9f50-7ed3511664b4","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
           ],"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"frames","resourceType":"GMSpriteFramesTrack","resourceVersion":"2.0","spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange":null,
