@@ -12,124 +12,163 @@ var _dash = keyboard_check_pressed(inputs.dash);
 var _pause = keyboard_check_pressed(inputs.pause);
 
 // Setting move
-spd_h = _dash ? (_right - _left) * spd_dash : (_right - _left) * spd_player;
-
+if(can_move){
+	spd_h = (_right - _left) * spd_player;
+}
 
 #region State Machine
-
 switch(state){
 	
-	case IDLE:
-		sprite_index = spr_player_idle;
-		
-		if (_right || _left){
-			state = WALKING;
-		} else if (_dash) {
-			state = DASHING;
-		} else if (_jump || spd_v != 0) {
-			state = JUMPING;
-			spd_v = -spd_jump;
-		}
-		
-		if (_attack) {
-			state = ATTACKING;
-		}
-		
-		image_index = 0;
-		break;
+	#region IDLE
+	case "IDLE":
 	
-	case WALKING:
-		sprite_index = spr_player_walk;
-		
-		if (abs(spd_h) < .1){
-			state = IDLE;
-		} else if (_dash) {
-			state = DASHING;
-		} else if (_jump || spd_v != 0) {
-			state = JUMPING;
-			spd_v = -spd_jump;
+		if(sprite_index != spr_player_idle) {
+			sprite_index = spr_player_idle;
+			image_index = 0;
 		}
 		
-		if (_attack) {
-			state = ATTACKING;
+		if (_right || _left) state = "WALKING";
+		else if (_jump || spd_v != 0) {
+			state = "JUMPING";
+			spd_v = (-spd_jump*_jump);
 		}
-		
-		image_index = 0
-		break;
-	
-	case DASHING:
-		sprite_index = spr_player_dash;
-		
-		if(image_index > image_number - 1) {
-			state = WALKING
-		}
+		if (_attack) state = "ATTACKING";
 		
 		break;
+	#endregion
 	
-	case JUMPING:
+	#region WALKING
+	case "WALKING":
+	
+		if(sprite_index != spr_player_walk) {
+			sprite_index = spr_player_walk;
+			image_index = 0;
+		}
+		
+		if (abs(spd_h) < .1) state = "IDLE";
+		else if (_dash) state = "DASHING";
+		else if (_jump || spd_v != 0) {
+			state = "JUMPING";
+			spd_v = (-spd_jump*_jump);
+		}
+		if (_attack) state = "ATTACKING";
+		
+		break;
+	#endregion
+	
+	#region DASHING
+	case "DASHING":
+	
+		if(sprite_index != spr_player_dash) {
+			sprite_index = spr_player_dash;
+			image_index = 0;
+		}
+		
+		spd_h = sign(image_xscale) * spd_dash;
+		
+		if(image_index > image_number - 1) state = "WALKING";
+		
+		if (_jump || spd_v > 0) {
+			state = "JUMPING";
+			spd_v = (-spd_jump*_jump);
+		}
+		
+		break;
+	#endregion
+	
+	#region JUMPING
+	case "JUMPING":
 		
 		if(spd_v < 0){
 			sprite_index = spr_player_jump;
 			image_index = 0;
 		}else {
 			sprite_index = spr_player_fall;
+			image_index = 0;
 		}
 		
-		if(on_ground){
-			state = IDLE;
-		}
+		if(on_ground) state = "IDLE";
+		if (_attack) state = "ATTACKING";
 		
-		if (_attack) {
-			state = ATTACKING;
-		}
 		break;
+	#endregion
 	
+	#region ATTACKING
+	case "ATTACKING":
 	
-	case ATTACKING:
-		sprite_index = spr_player_attack;
-		
-		if(image_index > image_number-1 && on_ground){
-			state = IDLE;
-		}else if (image_index > image_number-1){
-			state = JUMPING;
+		if(sprite_index != spr_player_attack) {
+			sprite_index = spr_player_attack;
+			image_index = 0;
 		}
+		
+		var _dmg;
+		
+		if(can_attack && on_ground && image_index == 0){
+			_dmg = instance_create_layer(x+sprite_width, y, layer, obj_dmg);
+			_dmg.sprite_index = spr_dmg_melee;
+			_dmg.parent = id;
+			_dmg.dmg_ammount = attack_pow;
+			can_attack = false;
+		} else {
+			if(can_attack && on_ground) {
+				_dmg = instance_create_layer(x, y, layer, obj_dmg);
+				_dmg.sprite_index = spr_dmg_aoe;
+				_dmg.parent = id;
+				_dmg.dmg_ammount = attack_pow + (mass*.25);
+				can_attack = false;
+			}
+		}		
+		
+		if(image_index > image_number-1  && !can_attack) {
+			state = "IDLE";
+			can_attack = true;
+		}
+		
 		break;
+	#endregion
+	
+	#region GETTING HIT
+	case "HIT":
+		
+		if(sprite_index != spr_player_hurt) {
+			sprite_index = spr_player_hurt;
+			image_index = 0;
+		}
+		
+		global.life = life;		
+		damageble = false;
+		
+		if (image_index > image_number-1) {
+			damageble = true;
+			state = "IDLE";
+		}
+		
+		break;
+	#endregion
 	
 }
+#endregion
 
-#endregion
+#region Auto-Damage System
+if(keyboard_check_pressed(ord("K"))){
 	
-#region Attack system
-if(_attack){
-	sprite_index = spr_player_attack;
-	
-	instance_create_layer(x+sprite_width, y, layer, obj_dmg);
-	
-	
-	if((global.life - attack_pw) > 0){
-		global.life -= attack_pw;
-	} else{ 
-		
-	}
+	global.life -= attack_pow;
 	
 }
-	
 #endregion
+
+#region Misc
+
+if(keyboard_check_pressed(vk_f11)) window_set_fullscreen(!window_get_fullscreen());
 
 #region Restart Room
 
-if(keyboard_check_pressed(vk_backspace)){
-	global.life = global.max_life;
-	room_restart();		
-}
+if(keyboard_check_pressed(vk_backspace)) reset();
+
+if(global.life <=  0) reset();
+
 #endregion
 
-if(keyboard_check_pressed(vk_f11)){
-	window_set_fullscreen(!window_get_fullscreen());
-}
+if(_pause) game_end();
 
-if(_pause){
-	game_end();
-}
-
-
+#endregion
