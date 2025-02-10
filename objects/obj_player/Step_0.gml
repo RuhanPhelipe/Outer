@@ -11,9 +11,11 @@ var _attack = keyboard_check_pressed(inputs.attack);
 var _dash = keyboard_check_pressed(inputs.dash);
 var _pause = keyboard_check_pressed(inputs.pause);
 
+global.life = life;
+
 // Setting move
 if(can_move){
-	spd_h = (_right - _left) * spd_player;
+	spd_h = (_right - _left) * spd_move;
 }
 
 #region State Machine
@@ -83,8 +85,8 @@ switch(state){
 			sprite_index = spr_player_jump;
 			image_index = 0;
 		}else {
-			sprite_index = spr_player_fall;
-			image_index = 0;
+			//sprite_index = spr_player_fall;
+			image_index = 3;
 		}
 		
 		if(on_ground) state = "IDLE";
@@ -96,33 +98,13 @@ switch(state){
 	#region ATTACKING
 	case "ATTACKING":
 	
-		if(sprite_index != spr_player_attack) {
-			sprite_index = spr_player_attack;
-			image_index = 0;
+		if (attack_type == "") {
+		    if(on_ground) attack_type = "MELLE";
+			else attack_type = "AOE";
 		}
 		
-		var _dmg;
-		
-		if(can_attack && on_ground && image_index == 0){
-			_dmg = instance_create_layer(x+sprite_width, y, layer, obj_dmg);
-			_dmg.sprite_index = spr_dmg_melee;
-			_dmg.parent = id;
-			_dmg.dmg_ammount = attack_pow;
-			can_attack = false;
-		} else {
-			if(can_attack && on_ground) {
-				_dmg = instance_create_layer(x, y, layer, obj_dmg);
-				_dmg.sprite_index = spr_dmg_aoe;
-				_dmg.parent = id;
-				_dmg.dmg_ammount = attack_pow + (mass*.25);
-				can_attack = false;
-			}
-		}		
-		
-		if(image_index > image_number-1  && !can_attack) {
-			state = "IDLE";
-			can_attack = true;
-		}
+		attack(spr_player_attack, 1, 3);
+	
 		
 		break;
 	#endregion
@@ -132,11 +114,11 @@ switch(state){
 		
 		if(sprite_index != spr_player_hurt) {
 			sprite_index = spr_player_hurt;
+			damageble = false;
 			image_index = 0;
 		}
 		
-		global.life = life;		
-		damageble = false;
+		global.life = life;
 		
 		if (image_index > image_number-1) {
 			damageble = true;
@@ -152,8 +134,13 @@ switch(state){
 #region Auto-Damage System
 if(keyboard_check_pressed(ord("K"))){
 	
-	global.life -= attack_pow;
+	life -= attack_pow;
 	
+}
+
+if(place_meeting(x, y, obj_enemy) && damageble && state != "DASHING"){
+	state = "HIT";
+	life -= 0.5;
 }
 #endregion
 
@@ -161,11 +148,13 @@ if(keyboard_check_pressed(ord("K"))){
 
 if(keyboard_check_pressed(vk_f11)) window_set_fullscreen(!window_get_fullscreen());
 
+if(keyboard_check_pressed(vk_tab)) global.show_tutorial = !global.show_tutorial;
+
 #region Restart Room
 
 if(keyboard_check_pressed(vk_backspace)) reset();
 
-if(global.life <=  0) reset();
+if(life <=  0) reset();
 
 #endregion
 

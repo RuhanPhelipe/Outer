@@ -4,6 +4,8 @@
 // Inherit the parent event
 event_inherited();
 
+randomize();
+
 cam = instance_create_layer(x, y, layer, obj_camera);
 cam.target = id;
 
@@ -14,7 +16,7 @@ damageble = true;
 max_life = global.max_life;
 life = global.life;
 
-//attack_pow = 6;
+//attack_pow = 0;
 
 inputs = {
 	left: ord("A"),

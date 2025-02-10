@@ -12,6 +12,9 @@ life = max_life;
 attack_pow = .5;
 attack_range = sprite_width;
 
-vison_range = attack_range*1.5;
+vison_range = attack_range;
 
-image_xscale = image_xscale*1;
+spd_move = 2;
+spd_jump = 20
+
+mass = 2;

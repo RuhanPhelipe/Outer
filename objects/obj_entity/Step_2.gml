@@ -28,3 +28,7 @@ if(_col){
 }
 
 y += spd_v;
+
+if(y > room_height){
+	life = 0;
+}

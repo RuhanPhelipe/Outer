@@ -4,6 +4,8 @@
 // Inherit the parent event
 event_inherited();
 
+//if(is_patrolling) patrol();
+
 #region State Machine
 
 switch(state) {
@@ -17,13 +19,16 @@ switch(state) {
 		}
 		
 		
-		_attack_player()
+		//state = choose("IDLE", "WALKING");
 		
 		break;
 	#endregion
 	
 	#region WALKING
 	case "WALKING":
+		
+		if(spd_h == 0) state = "IDLE";
+		
 		break;
 	#endregion
 	
@@ -32,26 +37,48 @@ switch(state) {
 		break;
 	#endregion
 	
+	#region CHASING
+	case "CHASING":
+		
+		if(sprite_index != spr_woods_troll_chasing){
+			sprite_index = spr_woods_troll_chasing;
+			image_index = 0;
+			image_xscale = sign(x-target.x)*-1;
+			is_patrolling = false;
+			got_aggro = true;
+		}
+	
+		if(got_aggro){
+			spd_h = image_xscale * spd_move;
+			if(target == noone){
+				spd_h = 0;
+				is_patrolling = true;
+				got_aggro = false;
+	
+				state = "IDLE";
+			}else if(point_distance(x, y, target.x, target.y) < attack_range){
+				spd_h = 0;
+				state = "ATTACKING";
+			}
+			
+		}
+		break;
+	#endregion
+	
 	#region ATTACKING
 	case "ATTACKING":
-		
-		if(sprite_index != spr_enemy_attack) {
-			sprite_index = spr_enemy_attack;
-			image_index = 0;
+	
+		if(attack_type == ""){
+			attack_type = choose("MELLE", "MELLE", "MELLE", "AOE");
+			if(attack_type == "AOE") {
+				spd_v = -spd_jump;
+				if(!on_ground) attack(spr_woods_troll_melle_attack, 5, 7);
+				break;
+			}
 		}
 		
-		if(can_attack && image_index > 5 && image_index < 7){
-			var _dmg = instance_create_layer(x + (attack_range*sign(image_xscale)), y, layer, obj_dmg);
-			_dmg.sprite_index = spr_dmg_melee;
-			_dmg.parent = id;
-			_dmg.dmg_ammount = attack_pow;
-			can_attack = false;
-		}
-		
-		if(image_index > image_number - 1) {
-			state = "IDLE";
-			can_attack = true;
-		}
+		attack(spr_woods_troll_melle_attack, 5, 7);
+
 		
 		break;
 	#endregion
@@ -59,14 +86,16 @@ switch(state) {
 	#region GETTING HIT
 	case "HIT":
 	
-		if(sprite_index != spr_enemy_hurt) {
-			sprite_index = spr_enemy_hurt;
+		delay = game_get_speed(gamespeed_fps) * 2;
+		
+		spd_h = 0;
+	
+		if(sprite_index != spr_woods_troll_hurt) {
+			sprite_index = spr_woods_troll_hurt;
+			damageble = false;
 			image_index = 0;
 		}
 		
-		damageble = false;
-		
-		if (life <= 0) instance_destroy();
 		
 		if (image_index > image_number-1) {
 			damageble = true;
@@ -75,6 +104,14 @@ switch(state) {
 		
 		break;
 	#endregion
+	
+	#region DEAD
+	case "DEAD":
+		instance_destroy();
+		break;
+	#endregion
 }
 
 #endregion
+
+if(delay > 0) delay--;

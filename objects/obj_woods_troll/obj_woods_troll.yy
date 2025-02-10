@@ -12,8 +12,8 @@
   "name":"obj_woods_troll",
   "overriddenProperties":[],
   "parent":{
-    "name":"Enemies",
-    "path":"folders/Objects/Entities/Enemies.yy",
+    "name":"Bosses",
+    "path":"folders/Objects/Entities/Enemies/Bosses.yy",
   },
   "parentObjectId":{
     "name":"obj_enemy",

@@ -3,7 +3,7 @@
 
 dmg_ammount = 0;
 parent = noone;
-_entity = instance_place(x, y, obj_entity);
+entity = instance_place(x, y, obj_entity);
 
 start = 0;
 stop = 0;
